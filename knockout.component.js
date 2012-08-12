@@ -1,8 +1,6 @@
 /**
- *
- * User: XDenSer
- * Date: 11.08.12
- * Time: 10:32
+ * Copyright: Denys Khanzhiyev
+ * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
 
 var  kc = {};
