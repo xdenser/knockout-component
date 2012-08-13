@@ -11,7 +11,7 @@ var  kc = {};
         components = {};
 
 
-    function BindComponentProperty(name,instance,binding,parentContext) {
+    function bindComponentProperty(name,instance,binding,parentContext) {
         var
             blockMine = false, blockOther = false, bindToObj, subscriptions=[];
 
@@ -22,15 +22,20 @@ var  kc = {};
                 binding(val);
                 blockMine = false;
             }));
-        } else instance[name] = ko.unwrapObservable(binding);
+        } else instance[name] = ko.utils.unwrapObservable(binding);
 
         if (ko.isSubscribable(binding)){
-          if( ko.isWriteableObservable(instance[name])) subscriptions.push(binding.subscribe(function (val) {
-            if (blockOther) return;
-            blockOther = true;
-            instance[name](val);
-            blockOther = false;
-          }))
+          if( ko.isWriteableObservable(instance[name])){
+              subscriptions.push(binding.subscribe(function (val) {
+                  if (blockOther) return;
+                  blockOther = true;
+                  instance[name](val);
+                  blockOther = false;
+              }));
+              blockOther = true;
+              instance[name](binding());
+              blockOther = false;
+          }
           else subscriptions.push(binding.subscribe(function (val) {
               instance[name] = val;
           }))
@@ -39,6 +44,8 @@ var  kc = {};
 
         return subscriptions;
     }
+
+
 
     var componentVMInstanceDomDataKey = '__kc__componentVMInstanceDomDataKey__';
     var templateSubscriptionDomDataKey = '__kc__templateSubscriptionDomDataKey__';
@@ -61,19 +68,22 @@ var  kc = {};
 
             var
                 bindings = allBindingsAccessor(),
-                componentBind = bindings['componentBind'],
+                componentBinding = bindings['componentBinding'],
                 componentOptions = bindings['componentOptions'],
+                componentAssignTo = bindings['componentAssignTo'],
                 subscriptions=[],
                 oldInstance = ko.utils.domData.get(element, componentVMInstanceDomDataKey),
                 newInstance = components[name].factory(componentOptions);
                 // if(oldInstance) make something with it
                 ko.utils.domData.set(element, componentVMInstanceDomDataKey,newInstance);
 
+            if(typeof componentAssignTo == 'function') componentAssignTo(newInstance);
 
-            if(componentBind && (typeof componentBind == 'object' && componentBind != null)){
-                for(var prop in componentBind) {
-                    if(componentBind.hasOwnProperty(prop)) {
-                        subscriptions = subscriptions.concat(BindComponentProperty(prop,newInstance,componentBind[prop],bindingContext));
+
+            if(componentBinding && (typeof componentBinding == 'object')){
+                for(var prop in componentBinding) {
+                    if(componentBinding.hasOwnProperty(prop)) {
+                        subscriptions = subscriptions.concat(bindComponentProperty(prop,newInstance,componentBinding[prop],bindingContext));
                     }
                 }
                 if(subscriptions.length) ko.utils.domNodeDisposal.addDisposeCallback(element,function(){
@@ -106,7 +116,7 @@ var  kc = {};
         }
     }
 
-
+    ko.virtualElements.allowedBindings['component'] = true;
 
 
     function Component(name,factory,template)

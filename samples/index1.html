@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/knockout-2.1.0.debug.js"></script>
+    <script src="js/knockout.component.js"></script>
+</head>
+<body>
+ <div data-bind="text:hello">
+
+ </div>
+
+ <div data-bind="text: selCity">
+
+ </div>
+
+
+ <div data-bind="component: 'cityList'">
+   {
+     selectedCity: selCity
+   }
+ </div>
+
+ <div data-bind="component: 'cityList', componentBind: { selectedCity: selCity }">
+
+ </div>
+
+ <div data-bind="component: 'cityList', componentBind: { selectedCity: 'selCity' }">
+
+ </div>
+
+ <div data-bind="component: 'doubleList', componentOptions: { firstList: ['one','two','three'] } ">
+
+ </div>
+
+ <div data-bind="component: 'doubleList', componentOptions: { firstList: ['000','1111','2222'] } ">
+
+ </div>
+
+
+ <script id="cityListTemplate" type="text/html">
+    <select data-bind="options:citiesList, value: selectedCity"></select>
+ </script>
+
+
+ <script type="text/javascript">
+
+    kc.component('cityList','cityListTemplate',function(){
+         var
+             viewModel = {
+                 citiesList: ko.observableArray(['New York','San Francisco','Boston','Dallas']),
+                 selectedCity: ko.observable()
+             };
+        return viewModel;
+    });
+ </script>
+
+ <script id="doubleListTemplate" type="text/html" >
+     <table>
+     <tr>
+      <td>
+     <select data-bind="options:firstList, value: selectedInFirst" multiple=true size=5>
+     </select>
+      </td>
+     <td>
+     <button data-bind="click: moveToSecond, enable: selectedInFirst" > &rarr; </button><br>
+     <button data-bind="click: moveToFirst, enable: selectedInSecond" > &larr; </button>
+     </td>
+     <td>
+     <select data-bind="options:secondList, value: selectedInSecond" multiple=true size=5>
+     </select>
+     </td>
+     </tr>
+     </table>
+
+ </script>
+
+ <script type="text/javascript">
+     kc.component('doubleList','doubleListTemplate',function(options){
+        var
+             viewModel = {
+                 firstList: ko.observableArray(options.firstList),
+                 secondList: ko.observableArray([]),
+                 selectedInFirst: ko.observable(),
+                 selectedInSecond: ko.observable(),
+                 moveToSecond:function(){
+                     var sel = this.selectedInFirst();
+                     if(sel) {
+                        this.secondList.push(this.firstList.remove(sel));
+                     }
+                 },
+                 moveToFirst:function(){
+                     var sel = this.selectedInSecond();
+                     if(sel) {
+                         this.firstList.push(this.secondList.remove(sel));
+                     }
+                 }
+             };
+         return viewModel;
+     });
+ </script>
+
+
+ <script type="text/javascript">
+     var vm = {
+        hello: ko.observable("Hello !"),
+        selCity: ko.observable()
+     };
+
+     ko.applyBindings(vm);
+
+ </script>
+
+
+</body>
+</html>

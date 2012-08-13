@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test 2</title>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/knockout-2.1.0.debug.js"></script>
+    <script src="js/knockout.component.js"></script>
+</head>
+<body>
+
+ <!-- ko component: 'loginForm', componentAssignTo: loginVM, componentBinding: { onLogin: onLogin} -->
+ <!-- /ko-->
+
+ <div data-bind="with: loginVM">
+     <!-- ko component: 'labeledText', componentBinding: { value: login},  componentOptions: { caption: 'Login:' } -->
+     <!-- /ko-->
+     <!-- ko component: 'labeledText', componentBinding: { value: password},  componentOptions: { caption: 'Password:' } -->
+     <!-- /ko-->
+ </div>
+
+<script id="labeledInput" type="text/html" >
+    <label data-bind='text: caption'></label>
+    <input data-bind='value: value, attr: { type: inputType}'>
+</script>
+
+
+ <script id="labeledText" type="text/html" >
+     <label data-bind='text: caption'></label>
+     <span data-bind='text: value'></span>
+ </script>
+
+<script id="loginForm" type="text/html">
+    <!-- ko component: 'labeledInput', componentBinding: { value: login}, componentOptions: { caption: 'Login:' }-->
+    <!-- /ko-->
+    <!-- ko component: 'labeledInput', componentBinding: { value: password}, componentOptions: { caption: 'Password:', inputType: 'password' } -->
+    <!-- /ko-->
+    <button data-bind='click: onLogin'>Login</button>
+    <button data-bind='click: clear'>Clear</button>
+</script>
+
+<script type="text/javascript">
+    kc.component('labeledInput','labeledInput',function(options){
+           var options = options||{};
+           return {
+               caption: options.caption||'default',
+               inputType: options.inputType||'text',
+               value: ko.observable()
+           };
+    });
+
+    kc.component('labeledText','labeledText',function(options){
+        var options = options||{};
+        return {
+            caption: options.caption||'default',
+            value: ko.observable()
+        };
+    });
+
+    kc.component('loginForm','loginForm',function(options){
+          return {
+              login:    ko.observable(),
+              password: ko.observable(),
+              onLogin: function(){},
+              clear: function(){ this.login(null);this.password(null);}
+          }
+    });
+
+    var vm = {
+        loginVM: ko.observable(),
+        onLogin: function(){
+            alert('onLogin called!');
+        }
+    };
+
+    ko.applyBindings(vm);
+
+</script>
+</body>
+</html>

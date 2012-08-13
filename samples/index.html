@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test 3</title>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/knockout-2.1.0.debug.js"></script>
+    <script src="js/knockout.component.js"></script>
+</head>
+<body>
+
+<div data-bind="component:'cart', componentOptions: { data: [{scu:'1',name:'item 1',price: 5},{scu:'2',name:'item 2',price: 7}]}"></div>
+
+<script id="cartPosition" type="text/html" >
+    <tr>
+    <td data-bind='text: scu'></td>
+    <td data-bind='text: name'></td>
+    <td data-bind='text: price'></td>
+    <!-- ko ifnot: editMode -->
+     <td data-bind='text: count, event:{ dblclick: function(){ editMode(true);}}'></td>
+    <!-- /ko -->
+    <!-- ko if: editMode -->
+     <td data-bind='event:{ dblclick: function(){ editMode(false);}}'><input data-bind='value: count'></td>
+    <!-- /ko -->
+    <td data-bind='text: percent'></td>
+    <td data-bind='text: sum'></td>
+    </tr>
+</script>
+
+<script id="cart" type="text/html" >
+    <table>
+       <thead>
+        <tr>
+          <th>SCU</th>
+          <th>NAME</th>
+          <th>Price</th>
+          <th>Count</th>
+          <th>Percent</th>
+          <th>Sum</th>
+
+        </tr>
+       </thead>
+       <tbody>
+       <!-- ko foreach: data -->
+
+       <!-- ko component: 'cartPosition', componentBinding: {total: $parent.total}, componentOptions: $data, componentAssignTo: $parent.dataVM  -->
+       <!-- /ko-->
+
+       <!-- /ko-->
+       </tbody>
+        <tfoot>
+        <tr><td colspan=5>Total: </td><td data-bind="text:total"></td></tr>
+        </tfoot>
+    </table>
+</script>
+
+<script type="text/javascript">
+
+    kc.component('cartPosition','cartPosition',function(options){
+        var options = options||{},
+         vm ={
+            scu: ko.observable(options.scu),
+            name: ko.observable(options.name),
+            price: ko.observable(options.price),
+            count: ko.observable(1),
+            total: ko.observable(),
+            editMode: ko.observable(false)
+        };
+        vm.sum = ko.computed(function(){
+            return vm.price()*vm.count();
+        });
+        vm.percent = ko.computed(function(){
+            var t = vm.total();
+            if(t>0) {
+                return vm.sum()*100/t;
+            } return 0;
+        });
+
+        return vm;
+    });
+
+    kc.component('cart','cart',function(options){
+        var options = options||{},
+        vm ={
+            data: ko.observableArray(options.data),
+            _dataVM:ko.observableArray()
+        };
+        vm.dataVM = ko.computed({
+            read:function(){ return vm._dataVM();},
+            write:function(val){ vm._dataVM.push(val); }
+        });
+        vm.total = ko.computed(function(){
+            var s = 0;
+            vm.dataVM().forEach(function(cartPos){ s+=cartPos.sum(); });
+            return s;
+        });
+        return vm;
+    });
+
+    ko.applyBindings({});
+</script>
+
+</body>
+</html>
