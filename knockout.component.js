@@ -73,9 +73,11 @@ var  kc = {};
                 componentAssignTo = bindings['componentAssignTo'],
                 subscriptions=[],
                 oldInstance = ko.utils.domData.get(element, componentVMInstanceDomDataKey),
-                newInstance = components[name].factory(componentOptions);
+                newInstance = components[name].factory(componentOptions,element);
                 // if(oldInstance) make something with it
                 ko.utils.domData.set(element, componentVMInstanceDomDataKey,newInstance);
+                
+                
 
             if(typeof componentAssignTo == 'function') componentAssignTo(newInstance);
 
@@ -101,7 +103,8 @@ var  kc = {};
               componentVM = ko.utils.domData.get(element, componentVMInstanceDomDataKey),
               childBindingContext = bindingContext.createChildContext(componentVM);
 
-            var  val = valueAccessor(), name;
+            var  val = valueAccessor(), name,
+                 bindings = allBindingsAccessor();
 
             valueUnwrapped = ko.utils.unwrapObservable(val);
             if(typeof valueUnwrapped == "string") {
@@ -110,9 +113,10 @@ var  kc = {};
             else throw new Error('component binding value must be component name');
             if(!components[name]) throw new Error('component not found '+name);
 
-
-            templateSubscription = ko.renderTemplate(components[name].template, childBindingContext, {}, element);
-            disposeOldSubscriptionAndStoreNewOne(element, templateSubscription);
+            if (components[name].template) {
+                templateSubscription = ko.renderTemplate(components[name].template, childBindingContext, bindings.templateOptions||{}, element);
+                disposeOldSubscriptionAndStoreNewOne(element, templateSubscription);
+            }
         }
     }
 
@@ -133,5 +137,4 @@ var  kc = {};
     // kc.components = components;
 
 })(kc);
-
 
