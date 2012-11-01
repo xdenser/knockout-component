@@ -3,13 +3,27 @@
  * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
 
-var  kc = {};
-(function(kc){
+!function(factory){
+    // Support three module loading scenarios
+    // stolen from knockoutjs source
+    if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
+        // [1] CommonJS/Node.js
+        var target = module['exports'] || exports; // module.exports is for Node.js
+        factory(target);
+    } else if (typeof define === 'function' && define['amd']) {
+        // [2] AMD anonymous module
+        define(['exports'], factory);
+    } else {
+        // [3] No module loader (plain <script> tag) - put directly in global namespace
+        factory(window['kc'] = {});
+    }
+}(function(kcExports){
 
-
+    
     var
+        kc = typeof kcExports !== 'undefined' ? kcExports : {};
         components = {};
-
+        
 
     function bindComponentProperty(name,instance,binding,parentContext) {
         var
@@ -135,6 +149,7 @@ var  kc = {};
            return new Component(name,viewModelFactory,template);
     };
     // kc.components = components;
-
-})(kc);
+    
+    return kc;
+});
 
