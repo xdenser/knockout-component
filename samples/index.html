@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div data-bind="component:'cart', componentOptions: { data: [{scu:'1',name:'item 1',price: 5},{scu:'2',name:'item 2',price: 7}]}"></div>
+<div data-bind="kc.cart: {}, componentOptions: { data: [{scu:'1',name:'item 1',price: 5},{scu:'2',name:'item 2',price: 7}]}"></div>
 
 <script id="cartPosition" type="text/html" >
     <tr>
@@ -42,7 +42,7 @@
        <tbody>
        <!-- ko foreach: data -->
 
-       <!-- ko component: 'cartPosition', componentBinding: {total: $parent.total}, componentOptions: $data, componentAssignTo: $parent.dataVM  -->
+       <!-- ko kc.cartPosition: { total: $parent.total}, componentOptions: $data, componentAssignTo: $parent.dataVM  -->
        <!-- /ko-->
 
        <!-- /ko-->

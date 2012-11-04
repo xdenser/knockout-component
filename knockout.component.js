@@ -142,6 +142,26 @@
         components[name] = this;
         this.factory = factory;
         this.template = template;
+        
+        ko.bindingHandlers['kc.'+name] = {
+            init:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
+               var  val = valueAccessor(),
+                    valueUnwrapped = ko.utils.unwrapObservable(val),
+                    bindings = allBindingsAccessor();
+               bindings.componentBinding = valueUnwrapped;   
+               console.log(viewModel);
+               console.log(bindings);                      
+               return ko.bindingHandlers['component'].init(element,function(){return name;},function(){return bindings;},viewModel,bindingContext);     
+            },
+            update:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
+               var  val = valueAccessor(),
+                    valueUnwrapped = ko.utils.unwrapObservable(val),
+                    bindings = allBindingsAccessor();
+               bindings.componentBinding = valueUnwrapped;                         
+               return ko.bindingHandlers['component'].update(element,function(){return name;},function(){return bindings;},viewModel,bindingContext);     
+            }
+        }
+        ko.virtualElements.allowedBindings['kc.'+name] = true; 
     }
 
 
