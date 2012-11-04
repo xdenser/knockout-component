@@ -9,13 +9,25 @@ See this [fiddle](http://jsfiddle.net/YdK6k/) on how to use.
 Component is just combination of ViewModel and Template.
 To create or rather register component use following call:
 
-`kc.component(componentName,templateName,viewModelFunction)`
+`kc.component(componentName,templateName,viewModelFunction)` 
+ or
+`kc.component({
+      name:componentName,
+      template: templateName,
+      create: viewModelFunction
+})`
+
 
 * `componentName` - name of component to refer later in HTML;
 * `templateName` - name of template used to render component;
 * `viewModelFunction: function(options)` - function returning new instance of component View Model.
 
 To use component apply `component` binding in HTML:
+```HTML
+<div data-bind="kc.<componentName>: bindObject, kc.options: optionsObject, kc.assign: assignToParentProperty">
+</div>
+```
+or alternative syntax
 ```HTML
 <div data-bind="component: componentName[, componentOptions: optionsObject][,componentBinding: bindObject][,componentAssignTo: assignToParentProperty]">
 </div>

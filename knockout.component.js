@@ -83,8 +83,8 @@
             var
                 bindings = allBindingsAccessor(),
                 componentBinding = bindings['componentBinding'],
-                componentOptions = bindings['componentOptions']||bindings['options'],
-                componentAssignTo = bindings['componentAssignTo']||bindings['assign'],
+                componentOptions = bindings['componentOptions']||bindings['kc.options'],
+                componentAssignTo = bindings['componentAssignTo']||bindings['kc.assign'],
                 subscriptions=[],
                 oldInstance = ko.utils.domData.get(element, componentVMInstanceDomDataKey),
                 newInstance = components[name].factory(componentOptions,element);
