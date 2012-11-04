@@ -167,8 +167,6 @@
                     valueUnwrapped = ko.utils.unwrapObservable(val),
                     bindings = allBindingsAccessor();
                bindings.componentBinding = valueUnwrapped;   
-               console.log(viewModel);
-               console.log(bindings);                      
                return ko.bindingHandlers['component'].init(element,function(){return name;},function(){return bindings;},viewModel,bindingContext);     
             },
             update:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
@@ -196,4 +194,4 @@
     
     return kc;
 });
-}(jQuery);
+}(window["jQuery"]);
