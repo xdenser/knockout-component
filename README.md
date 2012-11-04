@@ -3,7 +3,7 @@ knockout-component
 
 Simple reusable components for knockoutjs
 
-See this [fiddle](http://jsfiddle.net/YdK6k/) on how to use.
+See this [fiddle](http://jsfiddle.net/xdenser/YdK6k/5/) on how to use.
 
 
 Component is just combination of ViewModel and Template.
