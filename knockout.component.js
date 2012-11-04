@@ -2,7 +2,7 @@
  * Copyright: Denys Khanzhiyev
  * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
-
+!function($){
 !function(factory){
     // Support three module loading scenarios
     // stolen from knockoutjs source
@@ -83,8 +83,8 @@
             var
                 bindings = allBindingsAccessor(),
                 componentBinding = bindings['componentBinding'],
-                componentOptions = bindings['componentOptions'],
-                componentAssignTo = bindings['componentAssignTo'],
+                componentOptions = bindings['componentOptions']||bindings['options'],
+                componentAssignTo = bindings['componentAssignTo']||bindings['assign'],
                 subscriptions=[],
                 oldInstance = ko.utils.domData.get(element, componentVMInstanceDomDataKey),
                 newInstance = components[name].factory(componentOptions,element);
@@ -127,10 +127,12 @@
             else throw new Error('component binding value must be component name');
             if(!components[name]) throw new Error('component not found '+name);
 
-            if (components[name].template) {
-                templateSubscription = ko.renderTemplate(components[name].template, childBindingContext, bindings.templateOptions||{}, element);
-                disposeOldSubscriptionAndStoreNewOne(element, templateSubscription);
-            }
+            if(components[name].templateReady) components[name].templateReady(function(template){ 
+              if (template) {
+                   templateSubscription = ko.renderTemplate(template, childBindingContext, bindings.templateOptions||{}, element);
+                   disposeOldSubscriptionAndStoreNewOne(element, templateSubscription);
+              }
+            });  
         }
     }
 
@@ -142,6 +144,22 @@
         components[name] = this;
         this.factory = factory;
         this.template = template;
+        
+        if( (typeof template == 'string') || (typeof template == 'function')){
+            this.templateReady = function(cb){
+                cb(template);
+            }
+        } else if(template && template.url && $){
+            var tname = 'kc.'+name,
+                _promise = $.get(url,function(data){
+                   $('body').append('<script id="'+tname+'" type="text/html">'+data+'</script>');
+                });
+            this.templateReady = function(cb){
+               _promise.then(function(){ cb(tname); });
+            };
+        } else if(template && template.templateReady){
+            this.templateReady = template.templateReady;
+        }
         
         ko.bindingHandlers['kc.'+name] = {
             init:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
@@ -166,10 +184,16 @@
 
 
     kc.component = function(name,template,viewModelFactory){
+            var obj = name;
+            if(name && (typeof name == 'object')){
+                name = obj.name;
+                template = obj.template;
+                viewModelFactory = obj.create;
+            }
            return new Component(name,viewModelFactory,template);
     };
     // kc.components = components;
     
     return kc;
 });
-
+}(jQuery);
