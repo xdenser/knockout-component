@@ -5,9 +5,22 @@
     <meta charset="UTF-8">
     <script src="knockout-latest.debug.js"></script>
     <script src="../knockout.component.js"></script>
+    <style>
+        .editable {
+            color: green;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
-
+<h2>Doubleclick on Count to Edit</h2>
 <div data-bind="kc.cart: {}, kc.options: { data: [{scu:'1',name:'item 1',price: 5},{scu:'2',name:'item 2',price: 7}]}"></div>
 
 <script id="cartPosition" type="text/html" >
