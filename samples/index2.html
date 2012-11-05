@@ -9,13 +9,13 @@
 </head>
 <body>
 
- <!-- ko component: 'loginForm', componentAssignTo: loginVM, componentBinding: { onLogin: onLogin} -->
+ <!-- ko kc.loginForm:{ onLogin: onLogin}, kc.assign: loginVM -->
  <!-- /ko-->
 
  <div data-bind="with: loginVM">
-     <!-- ko component: 'labeledText', componentBinding: { value: login},  componentOptions: { caption: 'Login:' } -->
+     <!-- ko kc.labeledText: { value: login},  kc.options: { caption: 'Login:' } -->
      <!-- /ko-->
-     <!-- ko component: 'labeledText', componentBinding: { value: password},  componentOptions: { caption: 'Password:' } -->
+     <!-- ko kc.labeledText: { value: password}, kc.options: { caption: 'Password:' } -->
      <!-- /ko-->
  </div>
 
@@ -31,9 +31,9 @@
  </script>
 
 <script id="loginForm" type="text/html">
-    <!-- ko component: 'labeledInput', componentBinding: { value: login}, componentOptions: { caption: 'Login:' }-->
+    <!-- ko kc.labeledInput: { value: login}, kc.options: { caption: 'Login:' }-->
     <!-- /ko-->
-    <!-- ko component: 'labeledInput', componentBinding: { value: password}, componentOptions: { caption: 'Password:', inputType: 'password' } -->
+    <!-- ko kc.labeledInput: { value: password}, kc.options: { caption: 'Password:', inputType: 'password' } -->
     <!-- /ko-->
     <button data-bind='click: onLogin'>Login</button>
     <button data-bind='click: clear'>Clear</button>
