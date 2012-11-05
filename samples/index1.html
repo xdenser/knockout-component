@@ -20,21 +20,16 @@
 
  </div>
 
-
- <div data-bind="component: 'cityList'">
-   {
-     selectedCity: selCity
-   }
- </div>
-
- <div data-bind="component: 'cityList', componentBind: { selectedCity: selCity }">
+ <div data-bind="component: 'cityList', componentBinding: { selectedCity: selCity }">
 
  </div>
 
- <div data-bind="component: 'cityList', componentBind: { selectedCity: 'selCity' }">
+ <div data-bind="component: 'cityList', componentBinding: { selectedCity: 'Boston' }">
 
  </div>
-
+<br />
+<br />
+<br />
  <div data-bind="component: 'doubleList', componentOptions: { firstList: ['one','two','three'] } ">
 
  </div>
