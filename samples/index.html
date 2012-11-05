@@ -29,7 +29,7 @@
     <td data-bind='text: name'></td>
     <td data-bind='text: price'></td>
     <!-- ko ifnot: editMode -->
-     <td data-bind='text: count, event:{ dblclick: function(){ editMode(true);}}'></td>
+     <td class='editable' data-bind='text: count, event:{ dblclick: function(){ editMode(true);}}'></td>
     <!-- /ko -->
     <!-- ko if: editMode -->
      <td data-bind='event:{ dblclick: function(){ editMode(false);}}'><input data-bind='value: count'></td>
